@@ -13,7 +13,7 @@ const Dashboard = async () => {
           <h1 className='font-bold text-4xl lg:text-6xl'>Hello,</h1>
           <span className='text-xl font-bold lg:text-6xl pb-4'>{session?.user?.email}</span>
         </div>
-        <p className="pb-4">Welcome to Post it. Here are the stats of the week. We have more and more Posters and likes everyday. Let's see how it goes.</p>
+        <p className="pb-4">Welcome to Post it. Here are the stats of the week. We have more and more Posters and likes everyday. Let&apos;s see how it goes.</p>
       <PostsChart />
       <PostsLikesChart />
       </div>
