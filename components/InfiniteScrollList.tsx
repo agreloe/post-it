@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getPosts } from '@/actions/getPosts';
 import { Post } from '@/types';
-import '@/styles/InfiniteScrollList.css';
+import '../styles/infiniteScrollList.css';
 import PostCard from '@/components/PostCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ScrollToTopButton from '@/components/Buttons/ScrollToTopButton';
