@@ -22,7 +22,6 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
   Authenticator Authenticator[]
 
   createdAt DateTime @default(now())
@@ -71,7 +70,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @id @map("_id")
   userId               String  @db.ObjectId

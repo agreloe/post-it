@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary-light: hsl(210, 79%, 46%);
+  --color-primary-dark: hsl(207, 90%, 77%);
+  --color-secondary-light: hsl(339, 100%, 43%);
+  --color-secondary-dark: hsl(340, 82%, 76%);
+  --color-background-light: hsl(210, 79%, 99%);
+  --color-background-dark: hsl(225, 10%, 8%);
+  --color-text-light: var(--color-primary-light);
+  --color-text-dark: var(--color-primary-dark);
+}
+
+.dark {
+  --color-primary-dark: hsl(207, 90%, 77%);
+  --color-primary-light: hsl(210, 79%, 46%);
+  --color-secondary-dark: hsl(340, 82%, 76%);
+  --color-secondary-light: hsl(339, 100%, 43%);
+  --color-background-dark: hsl(225, 10%, 8%);
+  --color-background-light: hsl(210, 79%, 99%);
+  --color-text-dark: var(--color-primary-dark);
+  --color-text-light: var(--color-primary-light);
+}
+
+.bg-custom {
+  background-color: rgba(255, 255, 255, 0);
+  background-image: linear-gradient(var(--color-primary-light) 1px, transparent 1px), linear-gradient(to right, var(--color-primary-light) 1px, rgba(255, 255, 255, 0) 1px);
+  background-size: 80px 80px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}

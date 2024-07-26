@@ -1,14 +1,14 @@
 import React from 'react'
-import LoginGoogle from '@/components/LoginGoogle'
+import LoginGoogle from '@/components/Buttons/LoginGoogle'
 import LoginForm from '@/components/LoginForm'
 
 const SignIn = () => {
   return (
-    <div className='flex flex-col gap-4'>
-        <h1 className='text-4xl font-bold'>Sign In</h1>
-        <LoginGoogle />
+    <main className='bg-custom flex flex-col items-center justify-center h-screen absolute top-0 left-0 w-full lg:left-[25%] lg:w-[75%] px-8 py-16'>
+
         <LoginForm />
-    </div>
+
+    </main>
   )
 }
 

@@ -1,30 +1,42 @@
-import React from 'react'
-import Link from 'next/link'
-import { auth } from '@/auth'
-import Logout from '@/components/Logout'
+import React from 'react';
+import Link from 'next/link';
+import { auth } from '@/auth';
+import Logout from '@/components/Buttons/Logout';
+import Logo from '@/components/Logo';
+import ThemeToggle from "@/components/Buttons/ThemeToggle";
+import CustomLink from '@/components/Buttons/CustomLink';
 
 const Header = async () => {
-    const session = await auth()
-  return (
-    <header className='bg-slate-600 text-white'>
-        <nav className='flex justify-between items-center p-4'>
-            <Link href="/">Home</Link>
-            <ul className='flex items-center gap-4'>
-                <li><Link href="/dashboard">Dashboard</Link></li>
-                {
-                    session?.user ? (
-                        <li>
-                            <Logout />
-                        </li>
-                    ) : (
-                        <li><Link href="/sign-in">Sign in</Link></li>
-                    )
-                }
-            </ul>
+  const session = await auth();
 
-        </nav>
+  return (
+    <header className="bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark border-b border-solid border-primary-light dark:border-primary-dark top-0 z-50 h-fit lg:h-screen w-full lg:w-[25%] lg:border-b-0 lg:border-r lg:border-solid lg:border-primary-light dark:lg:border-primary-dark fixed">
+      <nav className={`flex justify-between items-center p-4 h-full flex-col lg:gap-4 relative ${session?.user ? 'gap-8' : ''}`}>
+        <Link href="/">
+          <Logo />
+          <span className="sr-only">Go to Homepage</span>
+        </Link>
+        <ul className="flex justify-between items-center gap-16 lg:flex-col lg:gap-4 lg:pb-8">
+          {session?.user && (
+            <li><CustomLink href="/dashboard">Dashboard</CustomLink></li>
+          )}
+          {session?.user && (
+            <li><CustomLink href="/posts">Posts</CustomLink></li>
+          )}
+          {session?.user ? (
+            <li className='absolute top-4 right-6'>
+              <Logout />
+            </li>
+          ) : (
+            <li className='absolute top-4 right-6 lg:right-8'><CustomLink href="/sign-in">Sign in</CustomLink></li>
+          )}
+          <li className='absolute top-4 left-6'>
+            <ThemeToggle />
+          </li>
+        </ul>
+      </nav>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
