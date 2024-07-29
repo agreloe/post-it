@@ -35,3 +35,27 @@
 //     }
 //   }
 // }
+
+
+declare namespace Cypress {
+    interface Chainable {
+      login(username: string, password: string): Chainable<void>;
+    }
+  }
+
+  Cypress.Commands.add('login', (email, password) => {
+    cy.request('/api/auth/csrf')
+      .its('body.csrfToken')
+      .then((csrfToken) => {
+        cy.request({
+          method: 'POST',
+          url: '/api/auth/callback/credentials',
+          form: true,
+          body: {
+            csrfToken,
+            email,
+            password,
+          },
+        });
+      });
+  });

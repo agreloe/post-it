@@ -1,9 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Post } from "@/types";
-import { AiFillLike, AiFillDislike } from "react-icons/ai";
+import { AiFillLike } from "@react-icons/all-files/ai/AiFillLike";
+import { AiFillDislike } from "@react-icons/all-files/ai/AiFillDislike";
 
 type PostCardProps = {
   post: Post;
+};
+
+type ReactionButtonProps = {
+  type: "like" | "dislike";
+  count: number;
+  onClick: () => void;
+  isActive: boolean;
+  bounce: boolean;
+  label: string;
+};
+
+const ReactionButton: React.FC<ReactionButtonProps> = ({ type, count, onClick, isActive, bounce, label }) => {
+  const Icon = type === "like" ? AiFillLike : AiFillDislike;
+  return (
+    <button
+      type="button"
+      className={`flex items-center gap-1 py-1 px-2 border border-solid border-primary-dark dark:border-primary-light w-fit rounded-full text-background-light dark:text-background-dark group hover:bg-primary-dark dark:hover:bg-primary-light transition-all duration-150 ease-in-out ${isActive ? 'bg-primary-dark dark:bg-primary-light' : 'bg-primary-light dark:bg-primary-dark'}`}
+      onClick={onClick}
+      aria-label={`${label}`}
+    >
+      <Icon
+        className={`fill-background-light dark:fill-background-dark transition-all duration-150 ease-in-out ${bounce ? "animate-bounce" : ""}`}
+      />
+      <span>{count}</span>
+    </button>
+  );
 };
 
 const PostCard = ({ post }: PostCardProps) => {
@@ -11,40 +38,25 @@ const PostCard = ({ post }: PostCardProps) => {
   const [dislikes, setDislikes] = useState(post.reactions.dislikes);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
-  const [likeBounce, setLikeBounce] = useState(false);
-  const [dislikeBounce, setDislikeBounce] = useState(false);
+  const [bounce, setBounce] = useState({ like: false, dislike: false });
 
-  const handleLike = () => {
-    if (liked) {
-      setLikes(likes - 1);
-      setLiked(false);
-    } else {
-      setLikes(likes + 1);
-      if (disliked) {
-        setDislikes(dislikes - 1);
-        setDisliked(false);
-      }
-      setLiked(true);
-    }
-    setLikeBounce(true);
-    setTimeout(() => setLikeBounce(false), 500);
-  };
+  const handleLike = useCallback(() => {
+    setLikes((prev) => (liked ? prev - 1 : prev + 1));
+    if (disliked) setDislikes((prev) => prev - 1);
+    setLiked((prev) => !prev);
+    setDisliked(false);
+    setBounce((prev) => ({ ...prev, like: true }));
+    setTimeout(() => setBounce((prev) => ({ ...prev, like: false })), 500);
+  }, [liked, disliked]);
 
-  const handleDislike = () => {
-    if (disliked) {
-      setDislikes(dislikes - 1);
-      setDisliked(false);
-    } else {
-      setDislikes(dislikes + 1);
-      if (liked) {
-        setLikes(likes - 1);
-        setLiked(false);
-      }
-      setDisliked(true);
-    }
-    setDislikeBounce(true);
-    setTimeout(() => setDislikeBounce(false), 500);
-  };
+  const handleDislike = useCallback(() => {
+    setDislikes((prev) => (disliked ? prev - 1 : prev + 1));
+    if (liked) setLikes((prev) => prev - 1);
+    setDisliked((prev) => !prev);
+    setLiked(false);
+    setBounce((prev) => ({ ...prev, dislike: true }));
+    setTimeout(() => setBounce((prev) => ({ ...prev, dislike: false })), 500);
+  }, [liked, disliked]);
 
   return (
     <div className="text-primary-light dark:text-primary-dark relative p-4 border border-solid border-primary-dark dark:border-primary-light">
@@ -65,31 +77,22 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
       <p className="font-light text-sm relative z-10">{post.body}</p>
       <div className="flex gap-4 pt-4">
-        <div
-          role="button"
-          className="flex items-center gap-1 py-1 px-2 border border-solid border-primary-dark dark:border-primary-light w-fit rounded-full bg-primary-light dark:bg-primary-dark text-background-light dark:text-background-dark group hover:bg-primary-dark dark:hover:bg-primary-light transition-all duration-150 ease-in-out"
+        <ReactionButton
+          type="like"
+          count={likes}
           onClick={handleLike}
-        >
-          <AiFillLike
-            className={`fill-background-light dark:fill-background-dark transition-all duration-150 ease-in-out ${
-              likeBounce ? "animate-bounce" : ""
-            }`}
-          />
-          <span>{likes}</span>
-        </div>
-
-        <div
-          role="button"
-          className="flex items-center gap-1 py-1 px-2 border border-solid border-primary-dark dark:border-primary-light w-fit rounded-full bg-primary-light dark:bg-primary-dark text-background-light dark:text-background-dark group hover:bg-primary-dark dark:hover:bg-primary-light transition-all duration-150 ease-in-out"
+          isActive={liked}
+          bounce={bounce.like}
+          label={`${liked ? "Undo like" : "Like"} this post`}
+        />
+        <ReactionButton
+          type="dislike"
+          count={dislikes}
           onClick={handleDislike}
-        >
-          <AiFillDislike
-            className={`fill-background-light dark:fill-background-dark transition-all duration-150 ease-in-out ${
-              dislikeBounce ? "animate-bounce" : ""
-            }`}
-          />
-          <span>{dislikes}</span>
-        </div>
+          isActive={disliked}
+          bounce={bounce.dislike}
+          label={`${disliked ? "Undo dislike" : "Dislike"} this post`}
+        />
       </div>
     </div>
   );
