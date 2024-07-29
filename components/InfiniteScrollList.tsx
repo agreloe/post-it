@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getPosts } from '@/actions/getPosts';
 import { Post } from '@/types';
@@ -22,11 +22,11 @@ const InfiniteScrollList = ({ initialPosts }: PostListProps) => {
   const postsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [isScrolling, setIsScrolling] = useState(false);
 
-  const loadMorePosts = async () => {
+  const loadMorePosts = useCallback(async () => {
     const newPosts = await getPosts(skip, NUMBER_OF_POSTS_TO_FETCH);
     setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-    setSkip(skip + NUMBER_OF_POSTS_TO_FETCH);
-  };
+    setSkip((prevSkip) => prevSkip + NUMBER_OF_POSTS_TO_FETCH);
+  }, [skip]);
 
   useEffect(() => {
     if (inView) {

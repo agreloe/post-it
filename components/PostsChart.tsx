@@ -11,7 +11,7 @@ import {
   Legend,
   ChartOptions,
 } from 'chart.js';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { User, Post } from '@/types';
 import useMediaQuery from '@/hooks/useMediaQuery';
@@ -28,8 +28,12 @@ interface PostsApiResponse {
   posts: Post[];
 }
 
-const getCSSVariable = (variable: string) =>
-  getComputedStyle(document.documentElement).getPropertyValue(variable);
+const getCSSVariable = (variable: string) => {
+  if (typeof window !== 'undefined') {
+    return getComputedStyle(document.documentElement).getPropertyValue(variable);
+  }
+  return '';
+};
 
 const PostsChartContent = () => {
   const isMobile = useMediaQuery(768);
@@ -38,49 +42,51 @@ const PostsChartContent = () => {
   const { data: usersData, error: usersError, isLoading: usersLoading } = useFetch<UsersApiResponse>('/users?limit=0');
   const { data: postsData, error: postsError, isLoading: postsLoading } = useFetch<PostsApiResponse>('/posts?limit=0');
 
-  if (usersLoading || postsLoading) return <LoadingSpinner />;
-  if (usersError) return <p>Error loading users: {usersError.message}</p>;
-  if (postsError) return <p>Error loading posts: {postsError.message}</p>;
+  const postsPerUser = useMemo(() => {
+    if (!postsData) return {};
+    return postsData.posts.reduce((acc, post) => {
+      acc[post.userId] = (acc[post.userId] || 0) + 1;
+      return acc;
+    }, {} as { [key: number]: number });
+  }, [postsData]);
 
-  const postsPerUser: { [key: number]: number } = {};
-  postsData?.posts.forEach((post) => {
-    const userId = post.userId;
-    postsPerUser[userId] = (postsPerUser[userId] || 0) + 1;
-  });
+  const sortedUserIds = useMemo(() => {
+    return Object.keys(postsPerUser)
+      .sort((a, b) => postsPerUser[Number(b)] - postsPerUser[Number(a)])
+      .slice(0, isMobile ? 5 : 10);
+  }, [postsPerUser, isMobile]);
 
-  const sortedUserIds = Object.keys(postsPerUser)
-    .sort((a, b) => postsPerUser[Number(b)] - postsPerUser[Number(a)])
-    .slice(0, isMobile ? 5 : 10);
+  const userIdToName = useMemo(() => {
+    if (!usersData) return {};
+    return usersData.users.reduce((acc, user) => {
+      acc[user.id] = `${user.firstName} ${user.lastName}`;
+      return acc;
+    }, {} as { [key: number]: string });
+  }, [usersData]);
 
-  const userIdToName: { [key: number]: string } = {};
-  usersData?.users.forEach((user) => {
-    userIdToName[user.id] = `${user.firstName} ${user.lastName}`;
-  });
+  const chartLabels = useMemo(() => {
+    return sortedUserIds.map(userId => userIdToName[Number(userId)] || `User ${userId}`);
+  }, [sortedUserIds, userIdToName]);
 
-  const chartLabels = sortedUserIds.map((userId) => {
-    const userName = userIdToName[Number(userId)];
-    return userName ? userName : `User ${userId}`;
-  });
-
-  const chartData = {
+  const chartData = useMemo(() => ({
     labels: chartLabels,
     datasets: [
       {
         label: 'Number of Posts',
-        data: sortedUserIds.map((userId) => postsPerUser[Number(userId)]),
+        data: sortedUserIds.map(userId => postsPerUser[Number(userId)]),
         backgroundColor: theme === 'dark' ? 'rgba(25, 118, 210, 0.4)' : 'rgba(144, 202, 249, 0.4)',
         borderColor: theme === 'dark' ? 'rgba(25, 118, 210, 1)' : 'rgba(144, 202, 249, 1)',
         borderWidth: 1,
       },
     ],
-  };
+  }), [chartLabels, sortedUserIds, postsPerUser, theme]);
 
-  const textColor = getCSSVariable('--color-text-light').trim() || '#2d3748';
-  const darkTextColor = getCSSVariable('--color-text-dark').trim() || '#f7fafc';
+  const textColor = useMemo(() => getCSSVariable('--color-text-light').trim() || '#2d3748', []);
+  const darkTextColor = useMemo(() => getCSSVariable('--color-text-dark').trim() || '#f7fafc', []);
 
   const appliedTextColor = theme === 'dark' ? darkTextColor : textColor;
 
-  const chartOptions: ChartOptions<'bar'> = {
+  const chartOptions: ChartOptions<'bar'> = useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -111,7 +117,10 @@ const PostsChartContent = () => {
         },
       },
     },
-  };
+  }), [appliedTextColor]);
+
+  if (usersLoading || postsLoading) return <LoadingSpinner />;
+  if (usersError || postsError) return <p>Something went wrong. Please try again later.</p>;
 
   return (
     <div style={{ width: '100%', height: '400px' }}>

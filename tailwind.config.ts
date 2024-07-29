@@ -32,10 +32,6 @@ const config: Config = {
         light: 'var(--color-primary-light)',
         dark: 'var(--color-primary-dark)',
       },
-      boxShadow: {
-        light: 'inset 0 0 200px 100px var(--color-background-light)',
-        dark: 'inset 0 0 200px 100px var(--color-background-dark)',
-      },
       keyframes: {
         bounce: {
           '0%, 100%': { transform: 'translateY(-25%)', animationTimingFunction: 'cubic-bezier(0.8,0,1,1)' },

@@ -5,7 +5,9 @@
       "dom.iterable",
       "esnext"
     ],
+    "types": ["@types/jest"],
     "allowJs": true,
+    "baseUrl": "./",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -33,7 +35,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "build/types/**/*.ts"
-  ],
+, "__mocks__/fileMock.js"  ],
   "exclude": [
     "node_modules"
   ]

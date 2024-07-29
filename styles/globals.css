@@ -7,7 +7,7 @@
   --color-primary-dark: hsl(207, 90%, 77%);
   --color-secondary-light: hsl(339, 100%, 43%);
   --color-secondary-dark: hsl(340, 82%, 76%);
-  --color-background-light: hsl(210, 79%, 99%);
+  --color-background-light: hsl(210, 79%, 98%);
   --color-background-dark: hsl(225, 10%, 8%);
   --color-text-light: var(--color-primary-light);
   --color-text-dark: var(--color-primary-dark);
@@ -19,7 +19,7 @@
   --color-secondary-dark: hsl(340, 82%, 76%);
   --color-secondary-light: hsl(339, 100%, 43%);
   --color-background-dark: hsl(225, 10%, 8%);
-  --color-background-light: hsl(210, 79%, 99%);
+  --color-background-light: hsl(210, 79%, 98%);
   --color-text-dark: var(--color-primary-dark);
   --color-text-light: var(--color-primary-light);
 }
