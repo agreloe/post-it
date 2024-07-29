@@ -1,5 +1,9 @@
 ## Post it.
 
+URL: https://postit-web.netlify.app/
+
+For sign in with credentials, any credentials will log in.
+
 ## Overview
 
 This document provides a comprehensive overview of the technical challenge project, including authentication, component development, dashboard generation, handling large datasets, testing, and documentation. Each task is described with implementation strategies, design patterns, and relevant approaches.
