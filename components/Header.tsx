@@ -10,7 +10,7 @@ const Header = async () => {
   const session = await auth();
 
   return (
-    <header className="bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark border-b border-solid border-primary-light dark:border-primary-dark top-0 z-50 h-fit lg:h-screen w-full lg:w-[25%] lg:border-b-0 lg:border-r lg:border-solid lg:border-primary-light dark:lg:border-primary-dark fixed">
+    <header className="bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark border-b border-solid border-primary-light dark:border-primary-dark top-0 z-50 h-fit lg:h-screen w-full lg:w-[25%] lg:border-b-0 lg:border-r lg:border-solid lg:border-primary-light dark:lg:border-primary-dark fixed min-h-[80px]">
       <nav className={`flex justify-between items-center p-4 h-full flex-col lg:gap-4 relative ${session?.user ? 'gap-8' : ''}`}>
         <Link href="/" aria-label="Go to Homepage">
           <Logo />
